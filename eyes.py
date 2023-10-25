@@ -1,6 +1,6 @@
+
+"""
 import cv2
-
-
 
 class process_image():
 
@@ -12,3 +12,7 @@ class process_image():
     
 if __name__ == '__main__':
     process_image()
+
+"""
+
+#no va por que lo ejecuta en servidor ruso, y no en esta patata :)
