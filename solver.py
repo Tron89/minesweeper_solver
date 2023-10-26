@@ -1,3 +1,5 @@
+# pylint: disable=all
+
 """
     los datos se estruturaran en una matriz de eje "x" y eje "y" introducido antes(el tamaño de la partida), 
     en el que se guardara el estado actual de la patida,
@@ -18,4 +20,9 @@
 
 
 class solver:
-    return none
+    def a():
+
+        return None
+
+
+solver.a()
