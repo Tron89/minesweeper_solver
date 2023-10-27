@@ -18,43 +18,6 @@
     A: bandera/bomba
     B: por descubrir
     
-    (0,0,0,0,1,A,1,0)
-    (0,0,0,0,1,1,1,0)
-    (1,1,1,0,1,2,2,1)
-    (1,A,2,1,1,A,B,1)
-    (1,2,A,1,1,3,B,B)
-    (1,2,2,1,0,1,A,B)
-    (B,B,1,0,0,1,4,B)
-    (B,1,1,0,0,0,2,B)
-    
-    solucion:
-    (0,0,0,0,1,A,1,0)
-    (0,0,0,0,1,1,1,0)
-    (1,1,1,0,1,2,2,1)
-    (1,A,2,1,1,A,A,1)
-    (1,2,A,1,1,3,4,3)
-    (1,2,2,1,0,1,A,A)
-    (1,A,1,0,0,1,4,A)
-    (1,1,1,0,0,0,2,A)
-    
-[['0' '0' '0' '0' '1' 'A' '1' '0']
-['0' '0' '0' '0' '1' '1' '1' '0']
-['1' '1' '1' '0' '1' '2' '2' '1']
-['1' 'A' '2' '1' '1' 'A' 'A' '1']
-['1' '2' 'A' '1' '1' '3' '4' '3']
-['1' '2' '2' '1' '0' '1' 'A' 'A']
-['1' 'A' '1' '0' '0' '1' '4' 'A']
-['1' '1' '1' '0' '0' '0' '2' 'A']]
-    
-    solucion no tan completa:
-    (0,0,0,0,1,A,1,0)
-    (0,0,0,0,1,1,1,0)
-    (1,1,1,0,1,2,2,1)
-    (1,A,2,1,1,A,A,1)
-    (1,2,A,1,1,3,B,B)
-    (1,2,2,1,0,1,A,A)
-    (B,A,1,0,0,1,4,A)
-    (B,1,1,0,0,0,2,A)
 
 """
 
@@ -70,6 +33,23 @@ class solver:
         self.define_map()
         self.bombs_location = []
         self.backtraking(self.map, self.remaining_bombs)
+        
+        
+        
+        shape = np.shape(self.map)
+        
+        for x in range(shape[0]):
+            for y in range(shape[1]):
+                self.probability_map[x,y] = self.probability_map[x,y] * 100 * self.remaining_bombs // self.possibilities 
+                
+            
+        
+        
+        
+        
+        
+        
+        print(self.possibilities)
         print(self.probability_map)
         
         
@@ -80,18 +60,18 @@ class solver:
         B = "B"
 
         self.map = np.array((
-            (0,0,0,0,1,A,1,0),
-            (0,0,0,0,1,1,1,0),
-            (1,1,1,0,1,2,2,1),
-            (1,A,2,1,1,A,B,1),
-            (1,2,A,1,1,3,B,B),
-            (1,2,2,1,0,1,A,B),
-            (B,B,1,0,0,1,4,B),
-            (B,1,1,0,0,0,2,B)))
+            (A,2,A,1,0,0,0,0),
+            (2,3,1,1,0,0,0,0),
+            (A,1,0,0,0,0,0,0),
+            (1,1,0,0,0,1,1,1),
+            (0,0,1,2,3,3,A,1),
+            (1,1,2,A,A,A,2,1),
+            (B,B,2,B,B,B,B,B),
+            (1,1,1,1,B,B,B,B)))
         
         self.probability_map = np.zeros(np.shape(self.map))
         
-        self.remaining_bombs = 5
+        self.remaining_bombs = 3
         
         
     def check_bomb(self, map):
@@ -132,10 +112,11 @@ class solver:
         if remaining_bombs == 0:
 
             if self.check_bomb(map):
-                print(len(self.bombs_location))
+                self.possibilities += 1
                 for i in range(len(self.bombs_location)):
                     
-                    self.probability_map[self.bombs_location[i][0],self.bombs_location[i][1]] =+ 1
+                    self.probability_map[self.bombs_location[i][0],self.bombs_location[i][1]] += 1
+                    
                     return None
             else:
                 return None
