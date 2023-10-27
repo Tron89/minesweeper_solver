@@ -6,6 +6,7 @@
     habra otra matriz, en la que se guardara cuantas veces se ha podido poner la bomba ahi.
 
     con backtraking se probaran todas las posibles posiciones de bombas
+    pero primero fuerza bruta
 
     luego ya vere que hago :)
 """
@@ -14,15 +15,145 @@
     NUMEROS:
     1-9: numeros del buscaminas
     0: puestos vacios
-    y: bandera
-    x: por descubrir
+    A: bandera/bomba
+    B: por descubrir
+    
+    (0,0,0,0,1,A,1,0)
+    (0,0,0,0,1,1,1,0)
+    (1,1,1,0,1,2,2,1)
+    (1,A,2,1,1,A,B,1)
+    (1,2,A,1,1,3,B,B)
+    (1,2,2,1,0,1,A,B)
+    (B,B,1,0,0,1,4,B)
+    (B,1,1,0,0,0,2,B)
+    
+    solucion:
+    (0,0,0,0,1,A,1,0)
+    (0,0,0,0,1,1,1,0)
+    (1,1,1,0,1,2,2,1)
+    (1,A,2,1,1,A,A,1)
+    (1,2,A,1,1,3,4,3)
+    (1,2,2,1,0,1,A,A)
+    (1,A,1,0,0,1,4,A)
+    (1,1,1,0,0,0,2,A)
+    
+[['0' '0' '0' '0' '1' 'A' '1' '0']
+['0' '0' '0' '0' '1' '1' '1' '0']
+['1' '1' '1' '0' '1' '2' '2' '1']
+['1' 'A' '2' '1' '1' 'A' 'A' '1']
+['1' '2' 'A' '1' '1' '3' '4' '3']
+['1' '2' '2' '1' '0' '1' 'A' 'A']
+['1' 'A' '1' '0' '0' '1' '4' 'A']
+['1' '1' '1' '0' '0' '0' '2' 'A']]
+    
+    solucion no tan completa:
+    (0,0,0,0,1,A,1,0)
+    (0,0,0,0,1,1,1,0)
+    (1,1,1,0,1,2,2,1)
+    (1,A,2,1,1,A,A,1)
+    (1,2,A,1,1,3,B,B)
+    (1,2,2,1,0,1,A,A)
+    (B,A,1,0,0,1,4,A)
+    (B,1,1,0,0,0,2,A)
+
 """
+
+import numpy as np
+
+
 
 
 class solver:
-    def a():
+    def __init__(self):
+        self.possibilities = 0
+        map = ()
+        self.define_map()
+        self.bombs_location = []
+        self.backtraking(self.map, self.remaining_bombs)
+        print(self.probability_map)
+        
+        
+        
+    
+    def define_map(self):
+        A = "A"
+        B = "B"
 
-        return None
+        self.map = np.array((
+            (0,0,0,0,1,A,1,0),
+            (0,0,0,0,1,1,1,0),
+            (1,1,1,0,1,2,2,1),
+            (1,A,2,1,1,A,B,1),
+            (1,2,A,1,1,3,B,B),
+            (1,2,2,1,0,1,A,B),
+            (B,B,1,0,0,1,4,B),
+            (B,1,1,0,0,0,2,B)))
+        
+        self.probability_map = np.zeros(np.shape(self.map))
+        
+        self.remaining_bombs = 5
+        
+        
+    def check_bomb(self, map):
+    
+        shape = np.shape(map)
+        
+        for x in range(shape[0]):
+            for y in range(shape[1]):
+                
+                actual_cell = map[x][y]
+                
+                if actual_cell != "A" and actual_cell != "B" and actual_cell != "0":
+                    
+                    bombs = 0
+                    
+                    for xp in range(-1,2):
+                        for yp in range(-1,2):
+                            
+                                xc = x + xp
+                                yc = y + yp
+                                
+                                if xc >= 0 and xc <= shape[0] - 1 and yc >= 0 and yc <= shape[1] - 1:
+                                    
+                                    if map[xc][yc] == "A":
+                                        bombs += 1
+
+                            
+                    if bombs != int(actual_cell):
+                        return False
+                    
+        return True
 
 
-solver.a()
+    def backtraking(self, map, remaining_bombs):
+        
+        possible_bombs = np.argwhere(map == "B")
+                    
+        if remaining_bombs == 0:
+
+            if self.check_bomb(map):
+                print(len(self.bombs_location))
+                for i in range(len(self.bombs_location)):
+                    
+                    self.probability_map[self.bombs_location[i][0],self.bombs_location[i][1]] =+ 1
+                    return None
+            else:
+                return None
+                
+        else:
+            for i in range(len(possible_bombs)):
+                actual_map = map.copy()
+                actual_remaining_bombs = remaining_bombs - 1
+                actual_map[possible_bombs[i][0]][possible_bombs[i][1]] = "A"
+                location_new_bomb = possible_bombs[i]
+                self.bombs_location.append(location_new_bomb)
+                self.backtraking(actual_map, actual_remaining_bombs)
+                self.bombs_location.pop()
+            return None
+            
+
+
+
+solver()
+
+
