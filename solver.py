@@ -1,25 +1,25 @@
 # pylint: disable=all
+# ^^^^^^
+# This is for github enviroments, but I think I going to change to my normal Windows
+# Yes, I use windows, someday I will change, but not now
 
-"""
-    los datos se estruturaran en una matriz de eje "x" y eje "y" introducido antes(el tamaño de la partida), 
-    en el que se guardara el estado actual de la patida,
-    habra otra matriz, en la que se guardara cuantas veces se ha podido poner la bomba ahi.
+# The data will be structured in a matrix with "x" and "y" axes predefined (size of the game),
+# where the current state of the game will be stored.
+# There will be another matrix to keep track of how many times a bomb has been placed in each position.
 
-    con backtraking se probaran todas las posibles posiciones de bombas
-    pero primero fuerza bruta
+# Backtracking will be used to try all possible bomb positions but
+# but a brute-force approach will be applied first.
 
-    luego ya vere que hago :)
-"""
+# And then I will see what I do :)
 
-"""
-    NUMEROS:
-    1-9: numeros del buscaminas
-    0: puestos vacios
-    A: bandera/bomba
-    B: por descubrir
-    
+# NUMBERS:
+# 1-9: Minesweeper numbers
+# 0: Empty spots
+# A: Flag/Bomb
+# B: To be discovered
 
-"""
+# Also, I need to comment all the code
+
 
 import numpy as np
 
@@ -41,13 +41,7 @@ class solver:
         for x in range(shape[0]):
             for y in range(shape[1]):
                 self.probability_map[x,y] = self.probability_map[x,y] * 100 * self.remaining_bombs // self.possibilities 
-                
-            
-        
-        
-        
-        
-        
+                   
         
         print(self.possibilities)
         print(self.probability_map)
