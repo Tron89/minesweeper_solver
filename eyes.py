@@ -70,5 +70,7 @@ class process_image():
         thresh = cv2.threshold(blur, 170, 255, cv2.THRESH_BINARY_INV, cv2.THRESH_OTSU)[1]
         return thresh
     
+
+
 if __name__ == '__main__':
     process_image()
