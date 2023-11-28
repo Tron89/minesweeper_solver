@@ -12,23 +12,30 @@ class process_image():
     def __init__(self):
         # Take a screenshot and find the sudoku
         screenshot = pyautogui.screenshot()
+        screenshot = np.array(screenshot)
 
         preprocessed = self.preprocess(screenshot)
         # HACK: Temporaly for a good debug :D
         # I have to do a error handling
         cv2.imshow("tresh image",preprocessed)
 
-        location_minesweeper = self.find_minesweeper(preprocessed)
-
+        minesweeper = self.find_minesweeper(preprocessed, screenshot)
         # HACK: Also for a good debug :D
-        screenshot = np.array(screenshot)
-        cv2.drawContours(screenshot, [location_minesweeper], -1, (0,255,0), 3)
-        cv2.imshow("b",screenshot)
+        cv2.imshow("minesweeper",minesweeper)
+        
+        # This will divide the minesweeper into parts(number of bombs...)
+        a, b, c = self.detect_from_minesweeper()
         cv2.waitKey(0)
 
+    def detect_from_minesweeper(self):
+        a = 1
+        b = 2
+        c = 3
+        
+        return a, b, c
 
     # Search for the location of the minesweeper
-    def find_minesweeper(self, preprocessed):
+    def find_minesweeper(self, preprocessed, screenshot):
         # Find external contours
         contours, _ = cv2.findContours(preprocessed, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)[-2:]
 
@@ -54,11 +61,10 @@ class process_image():
 
                 coord_min_xy = [coord_min_x[0], coord_min_y[1]]
 
-                # And it does it 
-                final_contour = np.array([coord_min_xy, coord_min_y, coord_max_xy, coord_min_x], dtype=np.int32)
-                final_contour = final_contour.reshape((-1, 1, 2))
+                # And it crops that part to simplify the rest of the code
+                minesweeper = screenshot[coord_min_xy[1]:coord_max_xy[1], coord_min_xy[0]:coord_max_xy[0]]
 
-                return final_contour
+                return minesweeper
 
 
 
