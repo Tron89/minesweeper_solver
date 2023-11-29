@@ -24,10 +24,12 @@ class process_image():
         cv2.imshow("minesweeper",minesweeper)
         
         # This will divide the minesweeper into parts(number of bombs...)
-        a, b, c = self.detect_from_minesweeper()
+        a, b, c = self.detect_from_minesweeper(minesweeper)
         cv2.waitKey(0)
 
-    def detect_from_minesweeper(self):
+    def detect_from_minesweeper(self, minesweeper):
+
+        minesweeper_preproccesed = self.preprocess(minesweeper)
         a = 1
         b = 2
         c = 3
