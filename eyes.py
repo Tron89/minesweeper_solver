@@ -14,7 +14,7 @@ class process_image():
         screenshot = pyautogui.screenshot()
         screenshot = np.array(screenshot)
 
-        preprocessed = self.preprocess(screenshot)
+        preprocessed = self.preprocess(screenshot, 170)
         # HACK: Temporaly for a good debug :D
         # I have to do a error handling
         cv2.imshow("tresh image",preprocessed)
@@ -29,7 +29,31 @@ class process_image():
 
     def detect_from_minesweeper(self, minesweeper):
 
-        minesweeper_preproccesed = self.preprocess(minesweeper)
+        # Find the counter of mines and time :)
+        def mines_time(minesweeper_preproccesed):
+            save = []
+            # It is preproccesed here to a better handling of the tresh
+            minesweeper_preproccesed = self.preprocess(minesweeper, 130)
+            contours, _ = cv2.findContours(minesweeper_preproccesed, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)[-2:]
+            cv2.imshow("preprocesed minesweeper", minesweeper_preproccesed)
+            for i, contour in enumerate(contours):
+                # Takes the area of the contour
+                epsilon = cv2.arcLength(contour, True)
+                # And it approximates the vertices
+                approx = cv2.approxPolyDP(contour, 0.01 * epsilon, True)
+                # It get all it is a quadrilateral decently large
+                if len(approx) == 4 and epsilon >= 100:
+                    # Store it
+                    save.append(contour)
+
+            # HACK: More for a good debug :)
+            cv2.drawContours(minesweeper, save, -1, (0,255,0), 3)
+            cv2.imshow("contour minesweeper", minesweeper)
+            cv2.waitKey(0)
+            return save[0], save[1]
+
+        # Main function
+        time_counter, mines_counter = mines_time(minesweeper)
         a = 1
         b = 2
         c = 3
@@ -64,7 +88,8 @@ class process_image():
                 coord_min_xy = [coord_min_x[0], coord_min_y[1]]
 
                 # And it crops that part to simplify the rest of the code
-                minesweeper = screenshot[coord_min_xy[1]:coord_max_xy[1], coord_min_xy[0]:coord_max_xy[0]]
+                # It subtract some pixels to remove the sides
+                minesweeper = screenshot[coord_min_xy[1]+5:coord_max_xy[1]-5, coord_min_xy[0]+5:coord_max_xy[0]-5]
 
                 return minesweeper
 
@@ -72,10 +97,10 @@ class process_image():
 
 
     # Preprocess the image to a better search
-    def preprocess(self, not_preprocessed_image):
+    def preprocess(self, not_preprocessed_image, threshold):
         gray = cv2.cvtColor(np.array(not_preprocessed_image), cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(gray, (5,5), 0)
-        thresh = cv2.threshold(blur, 170, 255, cv2.THRESH_BINARY_INV, cv2.THRESH_OTSU)[1]
+        thresh = cv2.threshold(blur, threshold, 255, cv2.THRESH_BINARY_INV, cv2.THRESH_OTSU)[1]
         return thresh
     
 
