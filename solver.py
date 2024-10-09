@@ -15,43 +15,46 @@
 # NUMBERS:
 # 1-9: Minesweeper numbers
 # 0: Empty spots
-# A: Flag/Bomb
-# B: To be discovered
+# F: Flag/Bomb
+# U: To be discovered
 
 # Also, I need to comment all the code
 
 
 import numpy as np
+import time
 
 
 
 
-class solver:
-    def __init__(self):
+class Solver:
+    def __init__(self, map):
         self.possibilities = 0
-        map = ()
-        self.define_map()
+        # self.define_map()
         self.bombs_location = []
-        self.backtraking(self.map, self.remaining_bombs)
+
+        map = np.array(map)
+
+        self.shape = np.shape(map)
         
+        self.probability_map = np.zeros(self.shape)
         
+        # self.backtraking(self.map, self.remaining_bombs)
         
-        shape = np.shape(self.map)
+        # shape = np.shape(self.map)
         
-        for x in range(shape[0]):
-            for y in range(shape[1]):
-                self.probability_map[x,y] = self.probability_map[x,y] * 100 * self.remaining_bombs // self.possibilities 
+        # for x in range(shape[0]):
+        #     for y in range(shape[1]):
+        #         self.probability_map[x,y] = self.probability_map[x,y] * 100 * self.remaining_bombs // self.possibilities 
                    
         
-        print(self.possibilities)
-        print(self.probability_map)
-        
-        
+        # print(self.possibilities)
+        # print(self.probability_map)
         
     
     def define_map(self):
-        A = "A"
-        B = "B"
+        A = "B"
+        B = "U"
 
         self.map = np.array((
             (A,2,A,1,0,0,0,0),
@@ -63,13 +66,13 @@ class solver:
             (B,B,2,B,B,B,B,B),
             (1,1,1,1,B,B,B,B)))
         
-        self.probability_map = np.zeros(np.shape(self.map))
+        
         
         self.remaining_bombs = 3
         
-        
+    # Verify if there are undefined spaces that can't have a bomb
     def check_bomb(self, map):
-    
+
         shape = np.shape(map)
         
         for x in range(shape[0]):
@@ -77,7 +80,7 @@ class solver:
                 
                 actual_cell = map[x][y]
                 
-                if actual_cell != "A" and actual_cell != "B" and actual_cell != "0":
+                if actual_cell != "F" and actual_cell != "U" and actual_cell != "0":
                     
                     bombs = 0
                     
@@ -89,7 +92,7 @@ class solver:
                                 
                                 if xc >= 0 and xc <= shape[0] - 1 and yc >= 0 and yc <= shape[1] - 1:
                                     
-                                    if map[xc][yc] == "A":
+                                    if map[xc][yc] == "F":
                                         bombs += 1
 
                             
@@ -100,8 +103,10 @@ class solver:
 
 
     def backtraking(self, map, remaining_bombs):
-        
-        possible_bombs = np.argwhere(map == "B")
+
+        map = np.array(map)
+
+        possible_bombs = np.argwhere(map == "U")
                     
         if remaining_bombs == 0:
 
@@ -119,16 +124,64 @@ class solver:
             for i in range(len(possible_bombs)):
                 actual_map = map.copy()
                 actual_remaining_bombs = remaining_bombs - 1
-                actual_map[possible_bombs[i][0]][possible_bombs[i][1]] = "A"
+                actual_map[possible_bombs[i][0]][possible_bombs[i][1]] = "F"
                 location_new_bomb = possible_bombs[i]
                 self.bombs_location.append(location_new_bomb)
                 self.backtraking(actual_map, actual_remaining_bombs)
                 self.bombs_location.pop()
             return None
-            
+        
+        
+    def get_min(self, map):
+        map = np.array(map)
+        temp_map = np.where(map == "U", self.probability_map, np.inf)
+        min = np.argmin(temp_map)
+        return np.unravel_index(min, self.probability_map.shape)
+        
+
+    def flush(self):
+        self.probability_map = np.zeros(self.shape)
 
 
+if __name__ == '__main__':
 
-solver()
+    F = "F"
+    U = "U"
+
+    # map = [
+    #     (F,2,F,1,0,0,0,0),
+    #     (2,3,1,1,0,0,0,0),
+    #     (F,1,0,0,0,0,0,0),
+    #     (1,1,0,0,0,1,1,1),
+    #     (0,0,1,2,3,3,F,1),
+    #     (1,1,2,F,F,F,2,1),
+    #     (U,U,2,U,U,U,U,U),
+    #     (1,1,1,1,U,U,U,U)]
+
+    map = [
+        (U,U,U,U,U,U,U,U,U),
+        (U,U,U,U,U,U,U,U,U),
+        (U,U,U,U,U,U,U,U,U),
+        (U,U,U,U,U,U,U,U,U),
+        (U,U,U,U,U,U,U,U,U),
+        (U,U,U,U,U,U,U,U,U),
+        (U,U,U,U,U,U,U,U,U),
+        (U,U,U,U,U,U,U,U,U),
+        (U,U,U,U,U,U,U,U,U),
+        (U,U,U,U,U,U,U,U,U),
+    ]
+    
+    bombs = 3
+
+    solver = Solver(map)
+
+    solver.backtraking(map, bombs)
+
+    x, y = solver.get_min()
+
+    print(solver.probability_map)
+
+    print(x, y)
+
 
 

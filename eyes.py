@@ -1,7 +1,9 @@
-# TODO: Finish it :D
+# TODO: Finish it :D 
 # It only catch where is the minesweeper, it has to detect all there is in
 # I also have to change some values to detect well the minesweeper :)
 # (now is terrible at it)
+
+# This is a incredible shit, I'm out of this
 
 import cv2
 import pyautogui
