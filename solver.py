@@ -1,8 +1,3 @@
-# pylint: disable=all
-# ^^^^^^
-# This is for github enviroments, but I think I going to change to my normal Windows
-# Yes, I use windows, someday I will change, but not now
-
 # The data will be structured in a matrix with "x" and "y" axes predefined (size of the game),
 # where the current state of the game will be stored.
 # There will be another matrix to keep track of how many times a bomb has been placed in each position.
@@ -24,32 +19,17 @@
 import numpy as np
 import time
 
-
-
-
 class Solver:
-    def __init__(self, map):
-        self.possibilities = 0
-        # self.define_map()
-        self.bombs_location = []
+    
+    bombs_location = []
+    possibilities = 0
 
+    def __init__(self, map):
         map = np.array(map)
 
         self.shape = np.shape(map)
         
         self.probability_map = np.zeros(self.shape)
-        
-        # self.backtraking(self.map, self.remaining_bombs)
-        
-        # shape = np.shape(self.map)
-        
-        # for x in range(shape[0]):
-        #     for y in range(shape[1]):
-        #         self.probability_map[x,y] = self.probability_map[x,y] * 100 * self.remaining_bombs // self.possibilities 
-                   
-        
-        # print(self.possibilities)
-        # print(self.probability_map)
         
     
     def define_map(self):
@@ -66,9 +46,8 @@ class Solver:
             (B,B,2,B,B,B,B,B),
             (1,1,1,1,B,B,B,B)))
         
-        
-        
         self.remaining_bombs = 3
+
         
     # Verify if there are undefined spaces that can't have a bomb
     def check_bomb(self, map):
@@ -136,7 +115,9 @@ class Solver:
         map = np.array(map)
         temp_map = np.where(map == "U", self.probability_map, np.inf)
         min = np.argmin(temp_map)
-        return np.unravel_index(min, self.probability_map.shape)
+        min_position = np.unravel_index(min, self.probability_map.shape)
+        self.flush()
+        return min_position
         
 
     def flush(self):
@@ -148,28 +129,15 @@ if __name__ == '__main__':
     F = "F"
     U = "U"
 
-    # map = [
-    #     (F,2,F,1,0,0,0,0),
-    #     (2,3,1,1,0,0,0,0),
-    #     (F,1,0,0,0,0,0,0),
-    #     (1,1,0,0,0,1,1,1),
-    #     (0,0,1,2,3,3,F,1),
-    #     (1,1,2,F,F,F,2,1),
-    #     (U,U,2,U,U,U,U,U),
-    #     (1,1,1,1,U,U,U,U)]
-
     map = [
-        (U,U,U,U,U,U,U,U,U),
-        (U,U,U,U,U,U,U,U,U),
-        (U,U,U,U,U,U,U,U,U),
-        (U,U,U,U,U,U,U,U,U),
-        (U,U,U,U,U,U,U,U,U),
-        (U,U,U,U,U,U,U,U,U),
-        (U,U,U,U,U,U,U,U,U),
-        (U,U,U,U,U,U,U,U,U),
-        (U,U,U,U,U,U,U,U,U),
-        (U,U,U,U,U,U,U,U,U),
-    ]
+        (F,2,F,1,0,0,0,0),
+        (2,3,1,1,0,0,0,0),
+        (F,1,0,0,0,0,0,0),
+        (1,1,0,0,0,1,1,1),
+        (0,0,1,2,3,3,F,1),
+        (1,1,2,F,F,F,2,1),
+        (U,U,2,U,U,U,U,U),
+        (1,1,1,1,U,U,U,U)]
     
     bombs = 3
 
@@ -177,7 +145,7 @@ if __name__ == '__main__':
 
     solver.backtraking(map, bombs)
 
-    x, y = solver.get_min()
+    x, y = solver.get_min(map)
 
     print(solver.probability_map)
 
