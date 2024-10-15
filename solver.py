@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
     solver = Solver(map)
 
-    print("aaaaaaaaaaaaaaaaaa: ", solver.get_min(map, bombs))
+    solver.get_min(map, bombs)
     for i in solver.probability_map:
         print(i)
 
