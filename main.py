@@ -30,14 +30,9 @@ def on_mouse_press(x, y, button, modifiers):
 
 def update(dt):
 
-    # Calculate the cells necesary to finish the map
-    remaining_bombs = bombs - np.count_nonzero(np.array(simulator.actualMap) == "F")
-    solver.backtraking(simulator.actualMap, remaining_bombs)
-    cells_to_finish = np.count_nonzero(np.array(simulator.actualMap) == "U") - remaining_bombs
-
     # If there are still cells to finish get the min posibility of bomb cell
-    if cells_to_finish != 0:
-        y, x = solver.get_min(simulator.actualMap)
+    if simulator.get_cells_to_finish() != 0:
+        y, x = solver.get_min(simulator.actualMap, simulator.get_bombs_remaining())
 
         values = simulator.press_cell(x, y, True)
         if values == "BOOM!":

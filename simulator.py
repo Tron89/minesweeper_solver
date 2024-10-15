@@ -97,6 +97,22 @@ class Simulator:
     def reveal_cell(self, x, y):
         self.actualMap[y][x] = self.finalMap[y][x]
 
+    def get_bombs_remaining(self):
+        count = 0
+        for i in self.actualMap:
+            for j in i:
+                if j == "F":
+                    count+=1
+        return self.total_bombs - count
+    
+    def get_cells_to_finish(self):
+        count = 0
+        for i in self.actualMap:
+            for j in i:
+                if j == "U":
+                    count+=1
+        return count - self.get_bombs_remaining()
+
 if __name__ == '__main__':
     Simulator(10, 10, 7)
 

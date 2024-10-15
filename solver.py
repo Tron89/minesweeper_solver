@@ -104,7 +104,6 @@ class Solver:
         return possible_bombs_location[possible_bombs_probability.index(minimum)]
 
 
-
 if __name__ == '__main__':
 
     F = "F"
