@@ -11,6 +11,8 @@
 # F: Flag/Bomb
 # U: To be discovered
 
+# TODO: Change to a better backtracking technique
+
 import copy
 
 class Solver:
