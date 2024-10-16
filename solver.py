@@ -56,14 +56,13 @@ class Solver:
 
     # The main function where all the magic happens :)
     # It will try all possible bomb positions, calling himself
-    def backtraking(self, map, remaining_bombs):
+    def backtraking(self, map, remaining_bombs, points = 0):
 
         # Find the undefined cells
         possible_bombs = [(i, j) for i, row in enumerate(map) for j, value in enumerate(row) if value == "U"]
 
         # If there are no bombs to put, add the posibilities to the posibility map and go back
         if remaining_bombs == 0:
-
             if self.check_bomb(map):
                 self.possibilities += 1
                 for i in range(len(self.bombs_location)):
@@ -75,14 +74,16 @@ class Solver:
         
         # If there are bombs go forward to the next backtraking function
         else:
-            for i in range(len(possible_bombs)):
+            next_point = points
+            for i in range(points, len(possible_bombs)):
                 actual_map = copy.deepcopy(map)
                 actual_remaining_bombs = remaining_bombs - 1
                 actual_map[possible_bombs[i][0]][possible_bombs[i][1]] = "F"
                 location_new_bomb = possible_bombs[i]
                 self.bombs_location.append(location_new_bomb)
-                self.backtraking(actual_map, actual_remaining_bombs)
+                self.backtraking(actual_map, actual_remaining_bombs, next_point)
                 self.bombs_location.pop()
+                next_point += 1
             return None
 
 

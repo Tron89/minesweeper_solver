@@ -43,7 +43,7 @@ def update(dt):
 
 sizex = 5
 sizey = 5
-bombs = 3
+bombs = 5
 
 simulator = Simulator(sizex, sizey, bombs)
 
