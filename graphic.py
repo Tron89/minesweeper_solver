@@ -21,7 +21,7 @@ class Graphic:
             for row in range(rows):
                 y = row * self.cell_size
                 x = col * self.cell_size
-                self.cells[row][col] = (shapes.Rectangle(x, y, self.cell_size-1, self.cell_size-1, color=(50, 50, 50)))
+                self.cells[row][col] = shapes.Rectangle(x, y, self.cell_size-1, self.cell_size-1, color=(128, 128, 128))
 
         # Create the cells numbers (inicialited in 0)
         self.numbers = [[0 for _ in range(cols)] for _ in range(rows)]
@@ -59,11 +59,11 @@ class Graphic:
     def change_cell(self, x, y, value, quit_cell):
         col, row = self.matrixPoint_to_cellsPoint(x, y)
         # Quit cell number if it has something
-        if self.numbers[row][col] != 0:
+        if self.numbers[row][col] != 0 and self.numbers[row][col].text == "F":
             self.numbers[row][col].delete()
             self.numbers[row][col] = 0
         # Put de value in the cell
-        else:
+        elif(self.numbers[row][col] == 0 and self.cells[row][col].color != (0, 0, 0, 255)):
             if quit_cell:
                 self.cells[row][col].color = (0, 0, 0)
             posx = col * self.cell_size
@@ -88,6 +88,9 @@ class Graphic:
         col = x
         row = self.rows - y - 1
         return col, row
+    
+    def close(self):
+        self.window.close()
 
 
 if __name__ == '__main__':

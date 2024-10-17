@@ -85,12 +85,13 @@ class Simulator:
                     self.cells_pressed = []
                     return cells_pressed
                 return
+        return "Nope"
     
     # Flag the cell
     def flag_cell(self, x, y):
         if self.actualMap[y][x] == "F":
             self.actualMap[y][x] = "U"
-        else:
+        elif(self.actualMap[y][x] == "U"):
             self.actualMap[y][x] = "F"
         
     # See what is inside that cell
